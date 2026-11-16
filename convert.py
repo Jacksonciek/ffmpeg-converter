@@ -15,7 +15,7 @@ VIDEO_EXTENSIONS = {
     ".avi", ".flv", ".m4v", ".mkv", ".mov", ".mp4", ".mpeg", ".mpg",
     ".mts", ".m2ts", ".ts", ".webm", ".wmv",
 }
-GENERATED_FRAME = re.compile(r"^(?:frame_)?\d+\.(?:jpg|png)$", re.IGNORECASE)
+LEGACY_FRAME = re.compile(r"^(?:frame_)?\d+\.(?:jpg|png)$", re.IGNORECASE)
 
 
 def parse_args() -> argparse.Namespace:
@@ -42,10 +42,15 @@ def find_ffmpeg(override: str) -> str | None:
     return shutil.which("ffmpeg")
 
 
-def clean_previous_frames(folder: Path) -> None:
+def clean_previous_frames(folder: Path, video_prefix: str) -> None:
     """Remove only frame files created by this converter before replacing a result."""
+    current_frames = re.compile(
+        rf"^{re.escape(video_prefix)}_\d+\.(?:jpg|png)$", re.IGNORECASE
+    )
     for item in folder.iterdir():
-        if item.is_file() and GENERATED_FRAME.fullmatch(item.name):
+        if item.is_file() and (
+            LEGACY_FRAME.fullmatch(item.name) or current_frames.fullmatch(item.name)
+        ):
             item.unlink()
 
 
@@ -58,7 +63,8 @@ def run_conversion(
     quality: int,
 ) -> bool:
     destination.mkdir(parents=True, exist_ok=True)
-    clean_previous_frames(destination)
+    video_prefix = destination.name
+    clean_previous_frames(destination, video_prefix)
 
     command = [ffmpeg, "-hide_banner", "-i", str(video), "-map", "0:v:0"]
     if interval > 0:
@@ -68,7 +74,7 @@ def run_conversion(
         command += ["-q:v", str(quality)]
     else:
         command += ["-compression_level", "3"]
-    command.append(str(destination / f"%03d.{image_format}"))
+    command.append(str(destination / f"{video_prefix}_%03d.{image_format}"))
 
     print(f"\n[{video.name}] → {destination.relative_to(ROOT)}")
     try:
@@ -81,7 +87,7 @@ def run_conversion(
         print(f"Gagal memproses {video.name} (kode {completed.returncode}).", file=sys.stderr)
         return False
 
-    frame_count = sum(1 for _ in destination.glob(f"*.{image_format}"))
+    frame_count = sum(1 for _ in destination.glob(f"{video_prefix}_*.{image_format}"))
     if frame_count == 0:
         print(f"Tidak ada frame yang diekstrak dari {video.name}.", file=sys.stderr)
         return False

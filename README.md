@@ -18,8 +18,8 @@ Secara default, perintah itu mengambil **1 frame setiap 0,5 detik** dan menyimpa
 ```text
 output/
 ├── nama-video-1/
-│   ├── 001.jpg
-│   ├── 002.jpg
+│   ├── nama-video-1_001.jpg
+│   ├── nama-video-1_002.jpg
 │   └── ...
 └── nama-video-2/
     ├── frame_000001.jpg
@@ -41,4 +41,4 @@ py -3 convert.py --ffmpeg "C:\ffmpeg\bin\ffmpeg.exe"
 - Pilih kualitas JPG (1 paling baik, 31 file lebih kecil): `py -3 convert.py --quality 2`
 - Jalankan `py -3 convert.py --help` untuk daftar opsi.
 
-Kalau dijalankan lagi, gambar frame lama yang dibuat konverter di folder video tersebut akan diganti. File lain di folder output tetap dibiarkan. Ekstraksi semua frame dapat menghasilkan ribuan gambar dan memakai banyak ruang disk.
+Nama gambar memakai nama video ditambah nomor urut, contohnya `avatar_001.jpg` dan `avatar_002.jpg`. Kalau dijalankan lagi, gambar frame lama yang dibuat konverter di folder video tersebut akan diganti. File lain di folder output tetap dibiarkan. Ekstraksi semua frame dapat menghasilkan ribuan gambar dan memakai banyak ruang disk.
