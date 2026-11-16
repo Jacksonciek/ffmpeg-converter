@@ -15,7 +15,7 @@ VIDEO_EXTENSIONS = {
     ".avi", ".flv", ".m4v", ".mkv", ".mov", ".mp4", ".mpeg", ".mpg",
     ".mts", ".m2ts", ".ts", ".webm", ".wmv",
 }
-GENERATED_FRAME = re.compile(r"^frame_\d+\.(?:jpg|png)$", re.IGNORECASE)
+GENERATED_FRAME = re.compile(r"^(?:frame_)?\d+\.(?:jpg|png)$", re.IGNORECASE)
 
 
 def parse_args() -> argparse.Namespace:
@@ -24,8 +24,8 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "--interval", type=float, default=0,
-        help="jarak antar gambar dalam detik; 0 berarti ekstrak semua frame",
+        "--interval", type=float, default=0.5,
+        help="jarak antar gambar dalam detik; gunakan 0 untuk ekstrak semua frame",
     )
     parser.add_argument("--format", choices=("jpg", "png"), default="jpg", help="format gambar")
     parser.add_argument("--quality", type=int, default=2, help="kualitas JPG, 1 paling baik sampai 31 lebih kecil")
@@ -68,7 +68,7 @@ def run_conversion(
         command += ["-q:v", str(quality)]
     else:
         command += ["-compression_level", "3"]
-    command.append(str(destination / f"frame_%06d.{image_format}"))
+    command.append(str(destination / f"%03d.{image_format}"))
 
     print(f"\n[{video.name}] → {destination.relative_to(ROOT)}")
     try:

@@ -13,13 +13,13 @@ Taruh semua video yang ingin diproses di folder `video/`, lalu jalankan satu per
    py -3 convert.py
    ```
 
-Perintah itu mengekstrak **semua frame** menjadi JPG. Hasilnya akan seperti ini:
+Secara default, perintah itu mengambil **1 frame setiap 0,5 detik** dan menyimpannya sebagai JPG. Hasilnya akan seperti ini:
 
 ```text
 output/
 ├── nama-video-1/
-│   ├── frame_000001.jpg
-│   ├── frame_000002.jpg
+│   ├── 001.jpg
+│   ├── 002.jpg
 │   └── ...
 └── nama-video-2/
     ├── frame_000001.jpg
@@ -34,10 +34,11 @@ py -3 convert.py --ffmpeg "C:\ffmpeg\bin\ffmpeg.exe"
 
 ## Pilihan tambahan
 
+- Ambil semua frame: `py -3 convert.py --interval 0`
+- Untuk gerakan cepat, ambil 4 frame per detik: `py -3 convert.py --interval 0.25`
 - Ambil satu frame per detik: `py -3 convert.py --interval 1`
-- Ambil satu frame setiap setengah detik: `py -3 convert.py --interval 0.5`
 - Simpan sebagai PNG: `py -3 convert.py --format png`
 - Pilih kualitas JPG (1 paling baik, 31 file lebih kecil): `py -3 convert.py --quality 2`
 - Jalankan `py -3 convert.py --help` untuk daftar opsi.
 
-Kalau dijalankan lagi, gambar frame lama di folder video tersebut akan diganti. File lain di folder output tetap dibiarkan. Ekstraksi semua frame dapat menghasilkan ribuan gambar dan memakai banyak ruang disk.
+Kalau dijalankan lagi, gambar frame lama yang dibuat konverter di folder video tersebut akan diganti. File lain di folder output tetap dibiarkan. Ekstraksi semua frame dapat menghasilkan ribuan gambar dan memakai banyak ruang disk.
