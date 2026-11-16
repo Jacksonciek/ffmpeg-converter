@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "--interval", type=float, default=0.5,
+        "--interval", type=float, default=1 / 3,
         help="jarak antar gambar dalam detik; gunakan 0 untuk ekstrak semua frame",
     )
     parser.add_argument("--format", choices=("jpg", "png"), default="jpg", help="format gambar")

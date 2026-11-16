@@ -13,7 +13,7 @@ Taruh semua video yang ingin diproses di folder `video/`, lalu jalankan satu per
    py -3 convert.py
    ```
 
-Secara default, perintah itu mengambil **1 frame setiap 0,5 detik** dan menyimpannya sebagai JPG. Hasilnya akan seperti ini:
+Secara default, perintah itu mengambil **3 frame per detik** (sekitar satu frame setiap 0,333 detik) dan menyimpannya sebagai JPG. Hasilnya akan seperti ini:
 
 ```text
 output/
@@ -22,7 +22,7 @@ output/
 │   ├── nama-video-1_002.jpg
 │   └── ...
 └── nama-video-2/
-    ├── frame_000001.jpg
+    ├── nama-video-2_001.jpg
     └── ...
 ```
 
