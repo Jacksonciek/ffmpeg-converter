@@ -27,6 +27,10 @@ def parse_args() -> argparse.Namespace:
         "--interval", type=float, default=1 / 3,
         help="jarak antar gambar dalam detik; gunakan 0 untuk ekstrak semua frame",
     )
+    parser.add_argument(
+        "--file", type=Path,
+        help="proses hanya satu video; path relatif dihitung dari folder project",
+    )
     parser.add_argument("--format", choices=("jpg", "png"), default="jpg", help="format gambar")
     parser.add_argument("--quality", type=int, default=2, help="kualitas JPG, 1 paling baik sampai 31 lebih kecil")
     parser.add_argument("--ffmpeg", default="", help="path ke ffmpeg.exe bila FFmpeg tidak ada di PATH")
@@ -113,13 +117,26 @@ def main() -> int:
         )
         return 2
 
-    if not VIDEO_DIR.is_dir():
-        print(f"Folder input tidak ditemukan: {VIDEO_DIR}", file=sys.stderr)
-        return 2
-    videos = sorted(
-        (path for path in VIDEO_DIR.iterdir() if path.is_file() and path.suffix.lower() in VIDEO_EXTENSIONS),
-        key=lambda path: path.name.casefold(),
-    )
+    if args.file:
+        video = args.file.expanduser()
+        if not video.is_absolute():
+            project_relative = ROOT / video
+            video = project_relative if project_relative.exists() else video.resolve()
+        if not video.is_file():
+            print(f"File video tidak ditemukan: {video}", file=sys.stderr)
+            return 2
+        if video.suffix.lower() not in VIDEO_EXTENSIONS:
+            print(f"Ekstensi file tidak didukung: {video.suffix or '(tanpa ekstensi)'}", file=sys.stderr)
+            return 2
+        videos = [video]
+    else:
+        if not VIDEO_DIR.is_dir():
+            print(f"Folder input tidak ditemukan: {VIDEO_DIR}", file=sys.stderr)
+            return 2
+        videos = sorted(
+            (path for path in VIDEO_DIR.iterdir() if path.is_file() and path.suffix.lower() in VIDEO_EXTENSIONS),
+            key=lambda path: path.name.casefold(),
+        )
     if not videos:
         print(f"Belum ada video di folder {VIDEO_DIR}.")
         print("Masukkan file video ke folder video, lalu jalankan perintah ini lagi.")
@@ -131,7 +148,10 @@ def main() -> int:
         print(f"Tidak bisa membuat folder output: {error}", file=sys.stderr)
         return 2
 
-    print(f"Menemukan {len(videos)} video di folder video.")
+    if args.file:
+        print(f"Memproses satu video: {videos[0]}")
+    else:
+        print(f"Menemukan {len(videos)} video di folder video.")
     success_count = 0
     used_names: set[str] = set()
     for video in videos:

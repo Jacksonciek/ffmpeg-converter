@@ -34,6 +34,8 @@ py -3 convert.py --ffmpeg "C:\ffmpeg\bin\ffmpeg.exe"
 
 ## Pilihan tambahan
 
+- Proses satu video saja: `py -3 convert.py --file "video\avatar.mp4"`
+- File di luar folder project juga bisa dipilih dengan path lengkap: `py -3 convert.py --file "D:\Videos\avatar.mp4"`
 - Ambil semua frame: `py -3 convert.py --interval 0`
 - Untuk gerakan cepat, ambil 4 frame per detik: `py -3 convert.py --interval 0.25`
 - Ambil satu frame per detik: `py -3 convert.py --interval 1`
